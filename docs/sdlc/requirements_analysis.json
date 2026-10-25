@@ -1,0 +1,329 @@
+{
+  "schema_version": "1.0",
+  "stage": "requirements_analysis",
+  "source_references": [
+    {
+      "source_type": "user_story",
+      "source_id": "user_story",
+      "locator": "characters 0-16000"
+    },
+    {
+      "source_type": "attachment",
+      "source_id": "a3ef5b8f-6e7a-4ef6-835c-d06a4b2ac10f",
+      "locator": "sign-in-wireframe.png"
+    },
+    {
+      "source_type": "knowledge",
+      "source_id": "1937b905-d187-4938-bf60-77b0df7f74b1",
+      "locator": "v1, chunk 0"
+    }
+  ],
+  "assumptions": [
+    "The complete pinned story was returned with next_offset null and contains no end marker; there is no story marker to copy.",
+    "The attachment reader returned only the sign-in-wireframe.png reference, without image contents, visual text, or a visible acceptance marker. No attachment marker can be copied, and exact wireframe conformity remains unverified.",
+    "Until the image can be inspected, the minimum sign-in UI is the independently evidenced \"Forgot password?\" entry point; no other visual layout, labels, colors, or spacing are assumed.",
+    "Sign-in and active-session behavior is specified only to the extent needed to demonstrate reset and invalidation of existing authenticated sessions; no unrelated authentication features are assumed.",
+    "For an unambiguous test of five requests per account per hour, interpret an hour as a rolling 60-minute window and allow a request again when a prior request falls outside that window; preserve the indistinguishable public response even when limited.",
+    "For this non-production application, a link issued for a known synthetic account is made available to its owner through the in-memory notification sink, not the public reset-request response; the precise user-facing delivery design is not specified.",
+    "Synthetic accounts and the in-memory notification sink are intentional production limitations, not a request for a production identity provider, external notification delivery, or deployment.",
+    "acceptance-20261025074121-42cb53-skill-sentinel — the acceptance requirements skill produced this output.",
+    "acceptance-20261025074121-42cb53-same-agent-revision — This same-agent follow-up clarifies REQ-006 using this run's ACC-STD-02 (\"Reset links are single-use and expire 30 minutes after they are issued.\"): expiry is measured from issuance, without a grace period."
+  ],
+  "open_questions": [
+    {
+      "question": "What visual and interaction details does sign-in-wireframe.png contain, and is there an acceptance marker in the image?",
+      "context": "Non-blocking. Assumption used: specify only the independently evidenced \"Forgot password?\" entry point; do not claim detailed visual conformity or an unseen marker until the image is inspectable.",
+      "blocking": false
+    },
+    {
+      "question": "Must sign-in be fully functional beyond supporting the reset entry point and testable active sessions?",
+      "context": "Non-blocking. Assumption used: specify only the minimum sign-in/session behavior necessary for password reset and all-session sign-out.",
+      "blocking": false
+    },
+    {
+      "question": "Is the per-account hourly reset-request limit a rolling 60-minute window or a fixed clock-hour bucket?",
+      "context": "Non-blocking. Assumption used: a rolling 60-minute window, with no extra link issued while five counted requests remain inside it.",
+      "blocking": false
+    },
+    {
+      "question": "How should a reset link be presented to its owner in the non-production application?",
+      "context": "Non-blocking. Assumption used: record it in the in-memory notification sink for the known synthetic account, never reveal account existence or the link in the public request response.",
+      "blocking": false
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "statement": "The sign-in page offers a \"Forgot password?\" entry point that opens the password-reset request interface.",
+      "acceptance_criteria": [
+        "Given the sign-in page, when a user selects \"Forgot password?\", then the password-reset request interface becomes available."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        },
+        {
+          "source_type": "knowledge",
+          "source_id": "1937b905-d187-4938-bf60-77b0df7f74b1",
+          "locator": "v1, chunk 0"
+        },
+        {
+          "source_type": "attachment",
+          "source_id": "a3ef5b8f-6e7a-4ef6-835c-d06a4b2ac10f",
+          "locator": "sign-in-wireframe.png"
+        }
+      ]
+    },
+    {
+      "id": "REQ-002",
+      "statement": "A permitted reset request for a known synthetic account issues a usable reset link for that account.",
+      "acceptance_criteria": [
+        "Given a synthetic account with remaining request allowance, when a reset is requested for it, then a reset link for that account is issued and is available to its owner through the non-production in-memory sink."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        },
+        {
+          "source_type": "knowledge",
+          "source_id": "1937b905-d187-4938-bf60-77b0df7f74b1",
+          "locator": "v1, chunk 0"
+        }
+      ]
+    },
+    {
+      "id": "REQ-003",
+      "statement": "A password-reset request produces the same outward response for an existing and an unknown account.",
+      "acceptance_criteria": [
+        "Given otherwise equivalent requests for a known synthetic account and an unknown account, when each is submitted, then their user-visible responses are identical and neither reveals whether an account exists.",
+        "Given an account has reached its request limit, when another request is submitted, then the user-visible response remains indistinguishable from the response for an unknown account."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        },
+        {
+          "source_type": "knowledge",
+          "source_id": "1937b905-d187-4938-bf60-77b0df7f74b1",
+          "locator": "v1, chunk 0"
+        }
+      ]
+    },
+    {
+      "id": "REQ-004",
+      "statement": "The application issues no more than five reset links per synthetic account within any rolling hour of requests.",
+      "acceptance_criteria": [
+        "Given five accepted reset requests for one account within a rolling 60-minute window, when a sixth request is submitted while all five remain in that window, then no sixth link is issued for that account.",
+        "Given an account's oldest counted request has fallen outside the rolling 60-minute window, when another request is submitted, then that account can receive a new link without exceeding five in the new window."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        },
+        {
+          "source_type": "knowledge",
+          "source_id": "1937b905-d187-4938-bf60-77b0df7f74b1",
+          "locator": "v1, chunk 0"
+        }
+      ]
+    },
+    {
+      "id": "REQ-005",
+      "statement": "A reset link can complete a password reset only once.",
+      "acceptance_criteria": [
+        "Given an unused, unexpired reset link, when a password reset succeeds with that link and the same link is submitted again, then the first reset succeeds and reuse cannot change the password."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        },
+        {
+          "source_type": "knowledge",
+          "source_id": "1937b905-d187-4938-bf60-77b0df7f74b1",
+          "locator": "v1, chunk 0"
+        }
+      ]
+    },
+    {
+      "id": "REQ-006",
+      "statement": "An unused reset link expires 30 minutes after it is issued; before then it remains eligible subject to other reset conditions.",
+      "acceptance_criteria": [
+        "Given an issued, unused reset link that otherwise satisfies reset conditions, when it is submitted before 30 minutes have elapsed since issuance, then it remains eligible to complete a password reset.",
+        "Given an issued, unused reset link, when it is submitted at or after 30 minutes have elapsed since issuance, then it is expired and cannot complete a password reset, with no grace period."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        },
+        {
+          "source_type": "knowledge",
+          "source_id": "1937b905-d187-4938-bf60-77b0df7f74b1",
+          "locator": "v1, chunk 0"
+        }
+      ]
+    },
+    {
+      "id": "REQ-007",
+      "statement": "An unused, unexpired reset link lets the associated synthetic account set a new password.",
+      "acceptance_criteria": [
+        "Given an unused, unexpired reset link for a synthetic account, when a new password is submitted through the reset flow, then that account's password is updated and the new password can be used for sign-in instead of the previous password."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        },
+        {
+          "source_type": "knowledge",
+          "source_id": "1937b905-d187-4938-bf60-77b0df7f74b1",
+          "locator": "v1, chunk 0"
+        }
+      ]
+    },
+    {
+      "id": "REQ-008",
+      "statement": "A successful password reset signs the account out of every previously active session.",
+      "acceptance_criteria": [
+        "Given a synthetic account with multiple active authenticated sessions, when its password is successfully reset, then every session active before the reset can no longer be used as an authenticated session."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        },
+        {
+          "source_type": "knowledge",
+          "source_id": "1937b905-d187-4938-bf60-77b0df7f74b1",
+          "locator": "v1, chunk 0"
+        }
+      ]
+    },
+    {
+      "id": "REQ-009",
+      "statement": "The account owner receives a notification after every successful password reset.",
+      "acceptance_criteria": [
+        "Given a synthetic account, when its password is reset successfully, then an owner-directed notification is generated for that reset; when another successful reset occurs, then another owner-directed notification is generated."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        },
+        {
+          "source_type": "knowledge",
+          "source_id": "1937b905-d187-4938-bf60-77b0df7f74b1",
+          "locator": "v1, chunk 0"
+        }
+      ]
+    },
+    {
+      "id": "REQ-010",
+      "statement": "The application's account-recovery flow operates on synthetic accounts rather than production identities.",
+      "acceptance_criteria": [
+        "Given the application and its test accounts, when its reset flow is exercised, then the accounts whose passwords are changed are synthetic and no production identity-provider account is changed."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        }
+      ]
+    },
+    {
+      "id": "REQ-011",
+      "statement": "The application records owner notifications in an in-memory notification sink rather than delivering them through an external service.",
+      "acceptance_criteria": [
+        "Given a successful reset of a synthetic account, when its owner notification is generated, then the notification is observable in the in-memory sink without external delivery."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        },
+        {
+          "source_type": "knowledge",
+          "source_id": "1937b905-d187-4938-bf60-77b0df7f74b1",
+          "locator": "v1, chunk 0"
+        }
+      ]
+    },
+    {
+      "id": "REQ-012",
+      "statement": "The application documentation explicitly describes its production limitations.",
+      "acceptance_criteria": [
+        "Given the application documentation, when it is reviewed, then it identifies synthetic accounts and in-memory notification delivery as non-production limitations and does not present them as production identity or notification services."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        }
+      ]
+    },
+    {
+      "id": "REQ-013",
+      "statement": "The repository provides automated tests for the application's password-reset behavior.",
+      "acceptance_criteria": [
+        "Given the repository's automated test suite, when it runs, then it exercises the reset entry point, issuance for synthetic accounts, non-enumerating responses, per-account request limit, single-use and expiry of links, password update, all-session sign-out, and notification in the in-memory sink."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        },
+        {
+          "source_type": "knowledge",
+          "source_id": "1937b905-d187-4938-bf60-77b0df7f74b1",
+          "locator": "v1, chunk 0"
+        }
+      ]
+    },
+    {
+      "id": "REQ-014",
+      "statement": "The requested work does not deploy the application.",
+      "acceptance_criteria": [
+        "Given completion of the requested work, when deployment activity is checked, then no application deployment has been performed as part of this work."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        }
+      ]
+    },
+    {
+      "id": "REQ-015",
+      "statement": "The requested work does not add deployment workflows.",
+      "acceptance_criteria": [
+        "Given the repository changes for this work, when workflow additions are inspected, then no deployment workflow has been added."
+      ],
+      "source_references": [
+        {
+          "source_type": "user_story",
+          "source_id": "user_story",
+          "locator": "characters 0-16000"
+        }
+      ]
+    }
+  ]
+}
