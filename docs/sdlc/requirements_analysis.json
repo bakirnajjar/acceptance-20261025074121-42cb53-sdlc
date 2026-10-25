@@ -26,7 +26,8 @@
     "For an unambiguous test of five requests per account per hour, interpret an hour as a rolling 60-minute window and allow a request again when a prior request falls outside that window; preserve the indistinguishable public response even when limited.",
     "For this non-production application, a link issued for a known synthetic account is made available to its owner through the in-memory notification sink, not the public reset-request response; the precise user-facing delivery design is not specified.",
     "Synthetic accounts and the in-memory notification sink are intentional production limitations, not a request for a production identity provider, external notification delivery, or deployment.",
-    "acceptance-20261025074121-42cb53-skill-sentinel — the acceptance requirements skill produced this output."
+    "acceptance-20261025074121-42cb53-skill-sentinel — the acceptance requirements skill produced this output.",
+    "acceptance-20261025074121-42cb53-same-agent-revision — This same-agent follow-up clarifies REQ-006 using this run's ACC-STD-02 (\"Reset links are single-use and expire 30 minutes after they are issued.\"): expiry is measured from issuance, without a grace period."
   ],
   "open_questions": [
     {
@@ -155,10 +156,10 @@
     },
     {
       "id": "REQ-006",
-      "statement": "A reset link expires 30 minutes after it is issued.",
+      "statement": "An unused reset link expires 30 minutes after it is issued; before then it remains eligible subject to other reset conditions.",
       "acceptance_criteria": [
-        "Given an issued unused link, when it is submitted less than 30 minutes after issue, then it remains eligible for password reset.",
-        "Given an issued unused link, when it is submitted at or after 30 minutes from issue, then it cannot reset the password."
+        "Given an issued, unused reset link that otherwise satisfies reset conditions, when it is submitted before 30 minutes have elapsed since issuance, then it remains eligible to complete a password reset.",
+        "Given an issued, unused reset link, when it is submitted at or after 30 minutes have elapsed since issuance, then it is expired and cannot complete a password reset, with no grace period."
       ],
       "source_references": [
         {

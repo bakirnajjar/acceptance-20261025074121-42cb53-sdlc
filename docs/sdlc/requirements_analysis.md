@@ -4,7 +4,7 @@
 
 - **S — pinned story:** `{"source_type":"user_story","source_id":"user_story","locator":"characters 0-16000"}`. The entire story was read (`next_offset: null`): a small password-reset application using a supplied sign-in wireframe and curated recovery standard, synthetic accounts, an in-memory notification sink, production-limitations documentation, and automated tests; no deployment or deployment workflows.
 - **A — supplied wireframe:** `{"source_type":"attachment","source_id":"a3ef5b8f-6e7a-4ef6-835c-d06a4b2ac10f","locator":"sign-in-wireframe.png"}`. The attachment reader provided only the reference, not image contents. A establishes that a wireframe was supplied, **not** its layout, labels, colors, interactions, or any unseen acceptance marker.
-- **K — this run's curated recovery standard:** `{"source_type":"knowledge","source_id":"1937b905-d187-4938-bf60-77b0df7f74b1","locator":"v1, chunk 0"}`. ACC-STD-01 covers the “Forgot password?” link, indistinguishable reset-request responses, and five requests per account per hour; ACC-STD-02 covers one-use links, 30-minute expiry, and all-session sign-out; ACC-STD-03 covers notification after each successful reset. Other similarly titled knowledge results are not sources for this contract.
+- **K — this run's curated recovery standard:** `{"source_type":"knowledge","source_id":"1937b905-d187-4938-bf60-77b0df7f74b1","locator":"v1, chunk 0"}`. ACC-STD-01 covers the “Forgot password?” link, indistinguishable reset-request responses, and five requests per account per hour; ACC-STD-02 states “Reset links are single-use and expire 30 minutes after they are issued.” It also covers all-session sign-out; ACC-STD-03 covers notification after each successful reset. Other similarly titled knowledge results are not sources for this contract.
 
 The JSON companion is the machine-readable contract. **S**, **A**, and **K** below denote the exact references above; **A** on REQ-001 records only the supplied wireframe's existence. No claim of visual fidelity can be verified yet.
 
@@ -42,8 +42,9 @@ A reset link can complete a password reset only once.
 
 ### REQ-006 — Link expiry
 
-A reset link expires 30 minutes after it is issued.  
-**Acceptance:** Given an issued unused link, when it is submitted less than 30 minutes after issue, then it remains eligible for password reset. Given an issued unused link, when it is submitted at or after 30 minutes from issue, then it cannot reset the password.  
+An unused reset link expires 30 minutes after it is issued; before then it remains eligible subject to other reset conditions.
+
+**Acceptance:** Given an issued, unused reset link that otherwise satisfies reset conditions, when it is submitted before 30 minutes have elapsed since issuance, then it remains eligible to complete a password reset. Given an issued, unused reset link, when it is submitted at or after 30 minutes have elapsed since issuance, then it is expired and cannot complete a password reset, with no grace period.
 **Sources:** S; K (ACC-STD-02).
 
 ### REQ-007 — New password
@@ -110,6 +111,7 @@ The requested work does not add deployment workflows.
 6. For this non-production application, a link issued for a known synthetic account is made available to its owner through the in-memory notification sink, not the public reset-request response; the precise user-facing delivery design is not specified.
 7. Synthetic accounts and the in-memory notification sink are intentional production limitations, not a request for a production identity provider, external notification delivery, or deployment.
 8. acceptance-20261025074121-42cb53-skill-sentinel — the acceptance requirements skill produced this output.
+9. acceptance-20261025074121-42cb53-same-agent-revision — This same-agent follow-up clarifies REQ-006 using this run's ACC-STD-02 ("Reset links are single-use and expire 30 minutes after they are issued."): expiry is measured from issuance, without a grace period.
 
 ## Open questions (all non-blocking)
 
